@@ -51,6 +51,7 @@ export const getProductById = createAsyncThunk(
   "product/getProductById",
   async (id) => {
     const res = await axios.get("/phones/" + id);
+    console.log(res.data);
     return res.data[0];
   }
 );
