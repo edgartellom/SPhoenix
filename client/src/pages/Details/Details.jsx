@@ -35,7 +35,7 @@ const Details = () => {
     <>
       <main className="main">
         {/* breadcrumb */}
-        <nav className="breadcrumb-nav border-0 mb-0">
+        <nav className="breadcrumb border-0 mb-0">
           <div className="container d-flex aling-items-center">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">

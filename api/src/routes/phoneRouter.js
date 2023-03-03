@@ -88,7 +88,7 @@ router.post("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-    let allPhones = await getAllPhones();
+    let allPhones = (await getAllPhones()).data;
     if (id) {
       let phoneId = await allPhones.filter((e) => e.id == id);
       phoneId.length

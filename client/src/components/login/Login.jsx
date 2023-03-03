@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import "firebase/app";
 import "firebase/auth";
 import { app, auth, db, storage } from "../../fireBase/firebase";
@@ -20,10 +19,13 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { setDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-// import fetchUsuarios from "../../redux/slices/userByIdSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, clearUser } from "../../redux/slices/userSlice.js";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
   const [message, setMessage] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -31,26 +33,34 @@ const Login = () => {
   const [emailLogin, setEmailLogin] = useState("");
   const [passwordLogin, setPasswordLogin] = useState("");
   const [error, setError] = useState(null);
-  const [user, setUser] = useState(null); //set global state
-  const [file, setFile] = useState(null);
-  const [adress, setAdress] = useState("");
-  const [phone, setPhone] = useState();
-  const dispatch = useDispatch();
-
-  // const usuario= useSelector(state=>state.user);
 
   const auth = getAuth();
+
   const provider = new GoogleAuthProvider();
+
+  const users = auth.currentUser;
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
+      if (user) {
+        dispatch(
+          setUser({
+            id: user.uid,
+            username: username,
+            email: user.email,
+            admin: false,
+          })
+        );
+      } else {
+        setUser(null);
+      }
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
-  console.log(storage);
   ///////////REGISTER//////
 
   const handleFormSubmit = async (event) => {
@@ -69,17 +79,29 @@ const Login = () => {
         const userDoc = doc(db, "users", user.uid);
         await setDoc(userDoc, {
           id: user.uid,
-          username,
+          username: username,
           admin: false,
           email: email,
         });
-
-        //dispatch(fetchUsuarios(user.uid))
-
-        console.log(user); //Link to back-end (create user)
       } catch (error) {
         console.log(error);
       }
+      dispatch(
+        setUser({
+          id: user.uid,
+          username: username,
+          email: user.email,
+          admin: false,
+        })
+        // postUser({
+        //   id: user.uid,
+        //   username: username,
+        //   email: user.email,
+        //   admin: false,
+        // })
+      );
+
+      console.log(user); //Link to back-end (create user)
 
       setMessage("Usuario creado");
 
@@ -107,8 +129,8 @@ const Login = () => {
         emailLogin,
         passwordLogin
       );
-      setUser(userCredential.user);
-      //navigate("/products");
+      dispatch(setUser(user));
+
       window.location.href = "/";
     } catch (error) {
       console.error("Sign in failed!", error);
@@ -121,12 +143,16 @@ const Login = () => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      setUser(null);
+      // Limpiar el estado global del usuario
+      dispatch(clearUser());
+      //setUser(null);
     } catch (error) {
-      console.error("Error al cerrar sesiÃ³n", error);
+      console.error("Error al cerrar sesion", error);
       setError(error.message);
     }
   };
+
+  //////LOGIN GOOGLE/////
 
   const handleOnClick = () => {
     signInWithPopup(auth, provider)
@@ -149,7 +175,7 @@ const Login = () => {
 
   return (
     <div>
-      {user !== null ? (
+      {user.id !== null ? (
         <button
           type="button"
           className="btn btn-outline-dark"

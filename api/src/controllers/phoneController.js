@@ -100,6 +100,7 @@ const getAllPhones = async () => {
         },
       },
     });
+    //return phones;
     return { data: phones, status: "success" };
   } catch (error) {
     return { message: error.message, status: "error" };

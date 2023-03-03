@@ -5,14 +5,14 @@ import {
   Products,
   Details,
   About,
-  
   Contact,
   OrderHistory,
   Checkout,
 } from "./pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CreatePhones } from "./components";
-import  Cart  from './components/shoppingCart/Cart'
+// import { Login } from "./components";
+import Cart from "./components/shoppingCart/Cart";
 
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
         <Route exact path="/products" element={<Products />} />
         <Route path="/products/:id" element={<Details />} />
         <Route path="/phones" element={<CreatePhones />} />
+        {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/about" element={<About />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/contact" element={<Contact />} />

@@ -7,8 +7,8 @@ import paginationReducer from "./slices/paginationSlice";
 import cartSlice from "./slices/cartSlice";
 import categoryListSlice from "./slices/categoryListSlice";
 import { cartApi } from "../services/cart.query";
-//import searchProductsReducer from "./slices/searchProductsSlice"
 
+//import searchProductsReducer from "./slices/searchProductsSlice"
 
 export const store = configureStore({
   reducer: {
